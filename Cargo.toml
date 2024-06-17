@@ -10,7 +10,7 @@ members = [
     "tests-executor-rust",
     "tests-driver",
     "langserv"
-]
+, "demo"]
 
 [patch.crates-io]
 hime_redist = { path = "./runtime-rust" }

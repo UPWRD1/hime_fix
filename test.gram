@@ -1,0 +1,105 @@
+// Single line comments begin with double slash
+/*
+ * This is a multiline comment
+ */
+grammar MathExp
+{
+    // The 'options' section in a grammar specifies various compilation options for the grammar.
+    // At the very least this section may be empty.
+    // For more information about this section, see: options reference
+    options
+    {
+        // The Axiom option specifies the top rule for the grammar.
+        Axiom = "exp";
+        // The Separator option specifies the separator terminal (usually white space).
+        Separator = "SEPARATOR";
+    }
+    // The 'terminals' section in a grammar specifies the lexical rules for terminals.
+    // This section is optional.
+    // For more information about this section, see: terminals reference
+    terminals
+    {
+        WHITE_SPACE -> U+0020 | U+0009 | U+000B | U+000C | '\n' | '\r';
+        SEPARATOR   -> WHITE_SPACE+;
+
+        ALPHA -> [a-z] | [A-Z];
+
+        INTEGER     -> [0-9] [0-9]* | '0' ;
+        FLOAT        -> INTEGER? '.' INTEGER  (('e' | 'E') ('+' | '-')? INTEGER)?
+                    |  INTEGER ('e' | 'E') ('+' | '-')? INTEGER ;
+        NUMBER      -> INTEGER | FLOAT ;
+
+        //STRING -> '\'' ( .* - (.* '\'' .*) ) '\'';
+
+        IDENTIFIER -> ('_' | ALPHA) (ALPHA | '_')* (ALPHA | [0-9] | '_')*;
+
+        TYPE -> 'int' | 'flt' | 'bool' | 'str' | '..';
+
+        COMPARISON_OP -> '>' | '>=' | '<' | '<=' | '==' | '!=';
+
+        //LOGICAL_OP -> 'and' | 'or' | 'not' ;
+
+    }
+    
+    // The 'rules' section in a grammar specifies the syntactic rules for variables.
+    // At the very least this section may be empty.
+    // For more information about this section, see: rules reference
+    rules
+  {
+
+    //statement_end -> ';' | '\n' | '\r' '\n';
+
+    exp_atom   -> NUMBER^ @OnNumber
+              //| STRING^ @OnString
+              | IDENTIFIER^ @OnIdentifier
+              | '('! exp^ ')'!;
+
+    exp_factor -> exp_atom^
+              |  exp_factor '*'^ exp_atom @OnBin
+              |  exp_factor '/'^ exp_atom @OnBin;
+    exp_term   -> exp_factor^
+              |  exp_term '+'^ exp_factor @OnBin
+              |  exp_term '-'^ exp_factor @OnBin;
+
+    //exp_cond ->  exp_term COMPARISON_OP^ exp_term | exp_atom^;
+
+//     range -> NUMBER 'thru'! NUMBER @OnRange;
+
+     exp        -> exp_term^;
+
+     pair_bind -> IDENTIFIER^ ':'! exp @OnBind;
+
+//     pair_decl -> IDENTIFIER^ ':'! TYPE @OnBind;
+
+//     iterable -> IDENTIFIER | range ;
+
+//     for_loop -> 'for'! IDENTIFIER 'in'! iterable block @OnFor;
+
+//     while_loop -> 'while'! exp block @OnWhile;
+
+//     loop_stmt -> (while_loop | for_loop)^;
+
+//     if_block -> 'do'! stmt+ ('end'! | 'else'! 'do'! stmt+  'end'!);
+
+//     if_stmt -> 'if'! exp if_block  @OnIf;
+
+//     print_stmt -> 'print' exp  @OnPrint;
+
+//     stmt -> (pair_bind | pair_decl | if_stmt | print_stmt | loop_stmt)^ ;
+
+
+     stmt -> pair_bind^ ;
+
+     block -> 'do'! stmt+ 'end'! ;
+
+     param_decl -> IDENTIFIER^ ':'! TYPE  @OnBind;
+
+     params -> '('! (param_decl ','!)* param_decl ')'! | '('! ')'! ;
+
+     function_decl -> 'let'! IDENTIFIER 'of'! params block  @OnFunc;
+
+     decl -> (function_decl)^;
+
+     program -> decl+;
+    }
+}

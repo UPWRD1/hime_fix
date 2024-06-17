@@ -390,7 +390,7 @@ fn write_code_constructors(
                 writer,
                 "    let text = Text::from_utf8_stream(input).unwrap();"
             )?;
-            writeln!(writer, "    parse_text{fn_suffix}(text, actions)")?;
+            writeln!(writer, "    Ok(parse_text{fn_suffix}(text, actions))")?;
             writeln!(writer, "}}")?;
         }
     }

@@ -1,0 +1,8 @@
+[package]
+name = "demo"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+hime_redist = "4.3.0"
+hime_sdk = { version = "4.3.0", features = ["print_errors"] }
